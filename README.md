@@ -8,11 +8,11 @@ USV simulator, based on [this repo](https://github.com/godardma/PythonVehicleSim
 
 ## Git Structure :
 
-* :file_folder: [/helios_ros2](usv_simulator) : **dossier contenant les sources**
+* :file_folder: [/usv_simulator](usv_simulator) : **dossier contenant les sources**
 * :file_folder: [/mesh](mesh) : **dossier contenant le mesh d'un USV**
 * :file_folder: [/rviz2_config](rviz2_config) : **dossier contenant la config rviz2 conseillée**
 * :spiral_notepad: [package.xml](package.xml)
-* :spiral_notepad: [setup.py](setup.py)    **fichier de setup ROS2 python**
+* :spiral_notepad: [CMakeLists.txt](CMakeLists.txt)    **fichier CMake**
 * :spiral_notepad: [README.md](README.md)
 
 ## Technologies :
@@ -39,7 +39,7 @@ Le package étant en python, le paramètre --symlink-install permet de ne pas av
 
 ## Lancement :
 ```bash
-ros2 launch usv_simulator simulator
+ros2 run usv_simulator boat_simulator.py
 ```
 
 * Visualisation
