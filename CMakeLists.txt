@@ -27,15 +27,27 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(ament_cmake_python REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
-ament_python_install_package(${PROJECT_NAME})
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/UsvCommand.msg"
+  DEPENDENCIES geometry_msgs
+)
 
 install(PROGRAMS
   usv_simulator/boat_simulator.py
+  usv_simulator/boat_control.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
 install(DIRECTORY mesh
 DESTINATION share/${PROJECT_NAME}/
 )
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 ament_package()

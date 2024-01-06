@@ -6,6 +6,9 @@ from std_srvs.srv import Trigger
 from tf2_ros import TransformBroadcaster
 from visualization_msgs.msg import Marker
 
+
+from usv_simulator.msg import UsvCommand 
+
 import rclpy
 from rclpy.node import Node
 
@@ -50,8 +53,8 @@ class BoatSimulator(Node):
         super().__init__('boat_simulator')
         self.pose_publisher = self.create_publisher(PoseStamped, 'pose', 1000)
         self.subscription_pose = self.create_subscription(
-            Float64,
-            'commande',
+            UsvCommand,
+            'usv_command',
             self.commande_callback,
             1000)
         self.marker_pub = self.create_publisher(Marker, "helios",100 )
@@ -59,7 +62,6 @@ class BoatSimulator(Node):
         self.tf_broadcaster_ned = TransformBroadcaster(self)
         timer_period = 0.02  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
-        self.mission_finished_serv=self.create_service(Trigger, 'finish', self.finish_callback)
 
         self.pose = PoseStamped()
         self.marker=Marker()
@@ -98,6 +100,8 @@ class BoatSimulator(Node):
         self.u_actual = self.vehicle.u_actual                  # actual inputs, defined by vehicle class
         self.i=0
 
+        self.n1,self.n2=-50,-50
+
 
     def one_step(self,eta,nu,u_control,u_actual):
         signals = np.append( np.append( np.append(eta,nu),u_control), u_actual )
@@ -113,7 +117,7 @@ class BoatSimulator(Node):
         self.t = self.i * self.sampleTime      # simulation time
 
         if (self.vehicle.controlMode == 'manualInput'):
-            u_control = self.vehicle.manualInput(-80,0)    #right,left
+            u_control = self.vehicle.manualInput(self.n1,self.n2)    #right,left
         else:
             u_control = np.array([0., 0.], float)   
         
@@ -158,16 +162,18 @@ class BoatSimulator(Node):
 
     
     def commande_callback(self,msg):
-        # self.get_logger().info('commande :%f'%msg.data)
-        if not math.isnan(msg.data):
-            self.comm=msg.data
-
-    def finish_callback(self, request, response):
-        response.success =True
-        response.message ="End Of Mission"
-        self.moteur=False
-
-        return response
+        if msg.right>100:
+            self.n1=100
+        elif msg.right<-100:
+            self.n1=-100
+        else:
+            self.n1=msg.right
+        if msg.left>100:
+            self.n2=100
+        elif msg.left<-100:
+            self.n2=-100
+        else:
+            self.n2=msg.left
 
 
 def main(args=None):
