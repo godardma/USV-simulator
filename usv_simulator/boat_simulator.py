@@ -52,20 +52,24 @@ class BoatSimulator(Node):
     def __init__(self):
         super().__init__('boat_simulator')
         self.pose_publisher = self.create_publisher(PoseStamped, 'pose', 1000)
+        self.current_publisher = self.create_publisher(PoseStamped, 'current', 1000)
         self.subscription_pose = self.create_subscription(
             UsvCommand,
             'usv_command',
             self.commande_callback,
             1000)
-        self.marker_pub = self.create_publisher(Marker, "helios",100 )
+        self.marker_pub = self.create_publisher(Marker, "usv",100 )
         self.tf_broadcaster = TransformBroadcaster(self)
-        self.tf_broadcaster_ned = TransformBroadcaster(self)
         timer_period = 0.02  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
+        self.current = PoseStamped()
         self.pose = PoseStamped()
         self.marker=Marker()
         self.pose.header.frame_id="map"
+        self.current.header.frame_id="map"
+
+        # Marker setup
         self.marker.header.frame_id="boat"
         self.marker.type = 10
         self.marker.id=0
@@ -77,30 +81,36 @@ class BoatSimulator(Node):
         self.marker.color.g=0.8
         self.marker.color.b=0.8
         self.marker.color.a = 0.8
-
         q_mark=quaternion_from_euler(0,0,np.pi/2)
         self.marker.pose.orientation.z = q_mark[2]
         self.marker.pose.orientation.w =q_mark[3]
-        self.marker.mesh_resource="package://usv_simulator/model.obj"
+        self.marker.mesh_resource="package://usv_simulator/mesh/model.obj"
 
-
-
-        self.comm=0.
-        self.theta,self.x,self.y=0.,0.,0.
-        self.moteur=True
-
-        self.vehicle = otter('manualInput',100.0,0.0,-30.0,200.0)
+        # Vehicle setup
+        self.v_current,self.beta_current=0.0,50.0
+        self.vehicle = otter('manualInput',100.0,self.v_current,self.beta_current,200.0)
         self.sampleTime = 0.02 
 
         self.DOF = 6                     # degrees of freedom
         self.t = 0                       # initial simulation time
-        # Initial state vectors
-        self.eta = np.array([0, 0, 0, 0, 0, 0], float)    # position/attitude, user editable
+        
+        self.eta = np.array([0, 0, 0, 0, 0, 0], float)    # Initial state vectors. position/attitude, user editable
         self.nu = self.vehicle.nu                              # velocity, defined by vehicle class
         self.u_actual = self.vehicle.u_actual                  # actual inputs, defined by vehicle class
         self.i=0
 
-        self.n1,self.n2=-50,-50
+        self.n1,self.n2=0,0
+
+        # Current setup
+        self.current.pose.position.x=0.0
+        self.current.pose.position.y=0.0
+        self.current.pose.position.z=2.0
+        q_current=quaternion_from_euler(0,0,self.beta_current*np.pi/180.0)
+        self.current.pose.orientation.x=q_current[0]
+        self.current.pose.orientation.y=q_current[1]
+        self.current.pose.orientation.z=q_current[2]
+        self.current.pose.orientation.w=q_current[3]
+
 
 
     def one_step(self,eta,nu,u_control,u_actual):
@@ -125,6 +135,7 @@ class BoatSimulator(Node):
         self.eta,self.nu,self.u_actual,signal=self.one_step(self.eta,self.nu,u_control,self.u_actual)
         self.i+=1
         self.pose.header.stamp = self.get_clock().now().to_msg()
+        self.current.header.stamp = self.get_clock().now().to_msg()
         self.marker.header.stamp = self.get_clock().now().to_msg()
         self.pose.pose.position.x=signal[0]
         self.pose.pose.position.y=signal[1]
@@ -155,6 +166,7 @@ class BoatSimulator(Node):
 
         self.tf_broadcaster.sendTransform(t)
         self.pose_publisher.publish(self.pose)
+        self.current_publisher.publish(self.current)
         self.marker_pub.publish(self.marker)
 
 

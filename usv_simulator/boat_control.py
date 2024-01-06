@@ -25,8 +25,12 @@ class BoatController(Node):
     
     def twist_callback(self,msg):
         av,rot=msg.linear.x,msg.angular.z
-        self.command.right=av*80+rot*80
-        self.command.left=av*80-rot*80
+        if rot>1:
+            rot=1
+        elif rot<-1:
+            rot=-1
+        self.command.right=50*(av+rot)
+        self.command.left=50*(av-rot)
         self.publisher.publish(self.command)
 
 

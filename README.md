@@ -1,6 +1,6 @@
 # USV simulator
 
-USV simulator, based on [this repo](https://github.com/godardma/PythonVehicleSimulator)
+Package ROS2 simulant la dynamique d'un catamaran motorisé (type Otter de Maritime Robotics), basé sur [ce repo](https://github.com/godardma/PythonVehicleSimulator)
 
 ## Auteur :
 
@@ -8,9 +8,12 @@ USV simulator, based on [this repo](https://github.com/godardma/PythonVehicleSim
 
 ## Git Structure :
 
-* :file_folder: [/usv_simulator](usv_simulator) : **dossier contenant les sources**
+* :file_folder: [/foxglove](foxglove) : **dossier contenant un layout conseillé pour Foxglove Studio**
+* :file_folder: [/launch](launch) : **dossier contenant les launcher**
 * :file_folder: [/mesh](mesh) : **dossier contenant le mesh d'un USV**
+* :file_folder: [/msg](msg) : **dossier contenant les messages custom**
 * :file_folder: [/rviz2_config](rviz2_config) : **dossier contenant la config rviz2 conseillée**
+* :file_folder: [/usv_simulator](usv_simulator) : **dossier contenant les sources**
 * :spiral_notepad: [package.xml](package.xml)
 * :spiral_notepad: [CMakeLists.txt](CMakeLists.txt)    **fichier CMake**
 * :spiral_notepad: [README.md](README.md)
@@ -29,19 +32,29 @@ USV simulator, based on [this repo](https://github.com/godardma/PythonVehicleSim
 * Se placer à la racine du workspace ROS2 Foxy
 * Build le package :
 ```bash
-colcon build --symlink-install --packages-select usv_simulator
+colcon build --packages-select usv_simulator
 . install/setup.zsh # pour les terminaux zsh
 . install/setup.bash # pour les terminaux bash
 
 ```
 
-Le package étant en python, le paramètre --symlink-install permet de ne pas avoir à recompiler le package après un changement.
-
 ## Lancement :
+
+### Simulateur seul :
+
 ```bash
 ros2 run usv_simulator boat_simulator.py
 ```
 
-* Visualisation
+### Simulateur et contrôleur :
+
+```bash
+ros2 launch usv_simulator launcher.launch.py
+```
+
+L'USV simulé peut ainsi être contrôlé par un message de type Twist, par exemple en utilisant rqt_robot_steering.
+
+
+## Visualisation
 
     Dans un terminal, lancer rviz2 et ouvrir la config jointe dans le dossier [/rviz2_config](rviz2_config) pour visualiser l'USV.

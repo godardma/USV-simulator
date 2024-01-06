@@ -1,0 +1,75 @@
+{
+  "configById": {
+    "Plot!4716tlo": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/usv_command.left",
+          "enabled": true,
+          "showLine": true,
+          "lineSize": 5
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/usv_command.right",
+          "enabled": true,
+          "lineSize": 5,
+          "color": "#fd3f00"
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "foxglovePanelTitle": "Command",
+      "followingViewWidth": 30,
+      "minYValue": -100,
+      "maxYValue": 100
+    },
+    "Plot!gme8pa": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/pose.pose.position.y",
+          "enabled": true,
+          "color": "#13ff00",
+          "lineSize": 5,
+          "showLine": false
+        }
+      ],
+      "minYValue": -5,
+      "maxYValue": 15,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "custom",
+      "sidebarDimension": 240,
+      "xAxisPath": {
+        "value": "/pose.pose.position.x"
+      },
+      "foxglovePanelTitle": "Position",
+      "minXValue": -10,
+      "maxXValue": 10
+    }
+  },
+  "globalVariables": {
+    "": "\"\""
+  },
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": {
+    "first": "Plot!4716tlo",
+    "second": "Plot!gme8pa",
+    "direction": "row",
+    "splitPercentage": 20.393426008038972
+  }
+}
