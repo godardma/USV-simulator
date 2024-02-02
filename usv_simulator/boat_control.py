@@ -32,10 +32,10 @@ class BoatController(Node):
 
         if rot>0:
             self.command.right=80*av
-            self.command.left=80*av-rot*80
+            self.command.left=80*av-rot*120
         else:
             self.command.left=80*av
-            self.command.right=80*av+rot*80
+            self.command.right=80*av+rot*120
         self.publisher.publish(self.command)
 
 
