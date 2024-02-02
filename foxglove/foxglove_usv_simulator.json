@@ -1,5 +1,28 @@
 {
   "configById": {
+    "Plot!17w2op5": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/pose.pose.position.x",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/pose.pose.position.y",
+          "enabled": true
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240,
+      "followingViewWidth": 30
+    },
     "Plot!4716tlo": {
       "paths": [
         {
@@ -67,9 +90,14 @@
     "speed": 1
   },
   "layout": {
-    "first": "Plot!4716tlo",
-    "second": "Plot!gme8pa",
     "direction": "row",
-    "splitPercentage": 20.393426008038972
+    "first": "Plot!17w2op5",
+    "second": {
+      "first": "Plot!4716tlo",
+      "second": "Plot!gme8pa",
+      "direction": "row",
+      "splitPercentage": 14.189189189189202
+    },
+    "splitPercentage": 46.48456553550275
   }
 }
