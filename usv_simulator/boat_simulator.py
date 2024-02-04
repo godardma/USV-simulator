@@ -72,8 +72,12 @@ class BoatSimulator(Node):
         self.current.header.frame_id="map"
 
         # Marker setup
-        self.marker.header.frame_id=self.get_namespace()
-        self.marker.ns = self.get_namespace()
+        if self.get_namespace()=='/':
+            self.frame_name="usv"
+        else:
+            self.frame_name=self.get_namespace()
+        self.marker.header.frame_id=self.frame_name
+        self.marker.ns = self.frame_name
         self.marker.type = 10
         self.marker.id=0
         self.marker.action = 0
@@ -158,7 +162,7 @@ class BoatSimulator(Node):
         t = TransformStamped()
         t.header.stamp = self.get_clock().now().to_msg()
         t.header.frame_id = 'map'
-        t.child_frame_id = self.get_namespace()
+        t.child_frame_id = self.frame_name
         t.transform.translation.x = self.pose.pose.position.x
         t.transform.translation.y =self.pose.pose.position.y
         t.transform.translation.z = self.pose.pose.position.z
@@ -172,7 +176,7 @@ class BoatSimulator(Node):
         self.tf_broadcaster.sendTransform(t)
         self.pose_publisher.publish(self.pose)
         self.current_publisher.publish(self.current)
-        if self.i%10==0:
+        if self.i%20==0:
             self.marker_pub.publish(self.marker)
 
 
