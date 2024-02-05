@@ -53,6 +53,7 @@ class BoatSimulator(Node):
         super().__init__('boat_simulator')
         self.declare_parameter('X0', 10.0)
         self.declare_parameter('Y0', -10.0)
+        self.declare_parameter('theta_0', 0.0)
         self.pose_publisher = self.create_publisher(PoseStamped, 'pose', 1000)
         self.current_publisher = self.create_publisher(PoseStamped, 'current', 1000)
         self.subscription_pose = self.create_subscription(
@@ -101,8 +102,8 @@ class BoatSimulator(Node):
         self.DOF = 6                     # degrees of freedom
         self.t = 0                       # initial simulation time
         
-        X0,Y0 = self.get_parameter('X0').get_parameter_value().double_value, self.get_parameter('Y0').get_parameter_value().double_value
-        self.eta = np.array([X0,Y0, 0, 0, 0, 0], float)    # Initial state vectors. position/attitude, user editable
+        X0,Y0,theta_0 = self.get_parameter('X0').get_parameter_value().double_value, self.get_parameter('Y0').get_parameter_value().double_value, self.get_parameter('theta_0').get_parameter_value().double_value
+        self.eta = np.array([X0,Y0, 0, 0, 0, theta_0], float)    # Initial state vectors. position/attitude, user editable
         self.nu = self.vehicle.nu                              # velocity, defined by vehicle class
         self.u_actual = self.vehicle.u_actual                  # actual inputs, defined by vehicle class
         self.i=0
@@ -176,7 +177,7 @@ class BoatSimulator(Node):
         self.tf_broadcaster.sendTransform(t)
         self.pose_publisher.publish(self.pose)
         self.current_publisher.publish(self.current)
-        if self.i%20==0:
+        if self.i%25==0:
             self.marker_pub.publish(self.marker)
 
 
